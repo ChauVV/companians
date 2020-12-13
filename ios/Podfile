@@ -8,10 +8,6 @@ target 'Companians' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  target 'CompaniansTests' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   # Enables Flipper.
   #
@@ -23,11 +19,3 @@ target 'Companians' do
   end
 end
 
-target 'Companians-tvOS' do
-  # Pods for Companians-tvOS
-
-  target 'Companians-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-end
