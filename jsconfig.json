@@ -17,8 +17,8 @@
       "components/*": [
         "./src/Components/*",
       ],
-      "navigations/*": [
-        "./src/Navigations/*"
+      "navigations": [
+        "./src/Navigations"
       ]
     }
   },

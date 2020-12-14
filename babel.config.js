@@ -12,14 +12,14 @@ module.exports = {
           assets: './src/Assets',
           screens: './src/Screens',
           components: './src/Components',
-          navigations: './src/Navigations',
-        },
-      },
-    ],
+          navigations: './src/Navigations'
+        }
+      }
+    ]
   ],
   env: {
     production: {
-      plugins: ['transform-remove-console'],
-    },
-  },
-};
+      plugins: ['transform-remove-console']
+    }
+  }
+}
