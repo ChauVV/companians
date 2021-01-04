@@ -11,6 +11,7 @@ import Announcements from 'screens/Announcements'
 import Feeds from 'screens/Feeds'
 import SignIn from 'screens/SignIn'
 import SignUp from 'screens/SignUp'
+import ForgotPassword from 'screens/ForgotPassword'
 
 const BottomTab = createBottomTabNavigator()
 
@@ -110,7 +111,19 @@ const AuthorzationStack = () => {
           headerShown: false
         }}
       />
-      <Stack.Screen name="SignUp" component={SignUp} options={{}} />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{
+          title: 'Sign Up',
+          headerBackTitleVisible: false
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={{headerBackTitleVisible: false, title: 'Forgot Password'}}
+      />
     </Stack.Navigator>
   )
 }

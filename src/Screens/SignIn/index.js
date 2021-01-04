@@ -10,10 +10,10 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-
+import {getStatusBarHeight} from 'utils/StatusBarHeight'
 import Images from 'assets/Images'
 
-const SignIn = () => {
+const SignIn = (props) => {
   const [usename, setUsename] = useState('')
   const [passwords, setPasswords] = useState('')
   const [remember, setRemember] = useState(false)
@@ -49,7 +49,11 @@ const SignIn = () => {
           <View style={[styles.inputPane, styles.passwordPane]}>
             <View style={styles.passwordHeader}>
               <Text style={styles.inputTitle}>PASSWORD</Text>
-              <Text style={styles.forgetPassword}>forgot password?</Text>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => props.navigation.navigate('ForgotPassword')}>
+                <Text style={styles.forgetPassword}>forgot password?</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.inputView}>
               <Icon name={'key'} color={'black'} size={20} />
@@ -72,7 +76,7 @@ const SignIn = () => {
               {remember && (
                 <Icon
                   name="check"
-                  size={22}
+                  size={25}
                   color={'green'}
                   style={styles.icCheck}
                 />
@@ -81,9 +85,25 @@ const SignIn = () => {
             <Text style={styles.rememberMe}>Remember me</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnSignIn}>
+          <TouchableOpacity
+            style={styles.btnSignIn}
+            onPress={() =>
+              props.navigation.reset({
+                index: 0,
+                routes: [{name: 'Tabbar'}]
+              })
+            }>
             <Text style={styles.btnSignInText}>Sign In</Text>
           </TouchableOpacity>
+
+          <View style={styles.signup}>
+            <Text style={styles.signupDescription}>Join with us?</Text>
+            <TouchableOpacity
+              style={styles.btnSignup}
+              onPress={() => props.navigation.navigate('SignUp')}>
+              <Text style={styles.btnSignupText}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAwareScrollView>
     </View>
@@ -93,6 +113,21 @@ const SignIn = () => {
 export default SignIn
 
 const styles = StyleSheet.create({
+  btnSignupText: {
+    color: 'green',
+    fontSize: 15,
+    fontWeight: 'bold'
+  },
+  signupDescription: {
+    color: 'gray',
+    fontSize: 15,
+    marginRight: 5
+  },
+  signup: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: 15
+  },
   btnSignInText: {
     color: 'white',
     fontSize: 15,
@@ -115,7 +150,7 @@ const styles = StyleSheet.create({
   },
   icCheck: {
     position: 'absolute',
-    right: 2
+    right: 0
   },
   rememberMe: {
     marginLeft: 10,
@@ -186,7 +221,7 @@ const styles = StyleSheet.create({
     elevation: 4
   },
   inputTitle: {
-    fontWeight: 'bold',
+    fontWeight: '600',
     fontSize: 16,
     marginBottom: 5
   },
@@ -199,8 +234,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height
+    height: Dimensions.get('window').height - getStatusBarHeight()
   },
   container: {
     flex: 1
