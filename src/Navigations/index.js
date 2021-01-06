@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react'
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
@@ -8,6 +7,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import Announcements from 'screens/Announcements'
+import AddAnnouncements from 'screens/AddAnnouncements'
 import Feeds from 'screens/Feeds'
 import SignIn from 'screens/SignIn'
 import SignUp from 'screens/SignUp'
@@ -93,6 +93,14 @@ function Tabbar() {
         }}
       />
       <BottomTab.Screen
+        name="AddAnnouncements"
+        component={AddAnnouncements}
+        options={{
+          tabBarLabel: 'AddAnnouncements',
+          icName: 'plus'
+        }}
+      />
+      <BottomTab.Screen
         name="Announcements"
         component={Announcements}
         options={{tabBarLabel: 'Announcements', icName: 'star'}}
@@ -161,7 +169,9 @@ export default RootNavigation
 
 const styles = StyleSheet.create({
   tabBar: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: 60,
+    paddingBottom: 10
   },
   tab: {
     flex: 1,
