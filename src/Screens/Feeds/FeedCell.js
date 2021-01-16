@@ -2,63 +2,69 @@ import React from 'react'
 import {
   View,
   StyleSheet,
-  FlatList,
-  Platform,
+  Text,
   Image,
-  SafeAreaView,
   Dimensions,
-  TouchableOpacity,
-  StatusBar
+  TouchableOpacity
 } from 'react-native'
 import Dash from 'components/Dash'
 import {IcOptions} from 'utils/VectorIcons'
 import Colors from 'utils/Colors'
-import FeedCell from './FeedCell'
-import Header from 'components/Header'
-import {HEADER_HEIGHT} from 'utils/Constants'
-import {STATUS_BAR_HEIGHT} from 'utils/StatusBarHeight'
 
-const feedAPI = 'https://5dda31555730550014fe75fa.mockapi.io/Post'
-
-const itemSeparatorComponent = () => {
-  return <View style={styles.itemSeparatorComponent} />
-}
-class Feeds extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      isLoading: true,
-      data: []
-    }
-  }
-
-  async componentDidMount() {
-    const re = await fetch(feedAPI, {method: 'GET'})
-    const data = await re.json()
-    this.setState({isLoading: false, data})
-  }
-
+class FeedCell extends React.PureComponent {
   render() {
-    const {data} = this.state
+    const {item} = this.props
 
     return (
-      <View style={styles.container}>
-        <Header />
-        <FlatList
-          data={data}
-          style={styles.flatlist}
-          keyExtractor={(item) => `${item.id}`}
-          renderItem={({item}) => <FeedCell item={item} />}
-          ItemSeparatorComponent={itemSeparatorComponent}
-          contentContainerStyle={styles.contentContainerStyle}
+      <View style={styles.cell}>
+        <View style={styles.cellAvatar}>
+          <View style={styles.avatarView}>
+            <Image style={styles.avatar} source={{uri: item.avatarPoster}} />
+          </View>
+          <View style={styles.posterInfo}>
+            <View style={styles.nameDescriptionView}>
+              <Text style={styles.nameDescription}>
+                <Text style={styles.avatarName}>{item.namePoster} </Text>
+                <Text style={styles.cellHeaderDescription}>is at ACB</Text>
+              </Text>
+            </View>
+            <Text style={styles.clocaton}>@location</Text>
+          </View>
+          <Text style={styles.chTime}>1h ago</Text>
+        </View>
+        <Text style={styles.cellDescription}>
+          {
+            'Thêm ngày cho chuyến đi của bạn để nhận thông tin về chính sách hủy cho đặt phòng này.'
+          }
+        </Text>
+        <View style={styles.imageView}>
+          <Image style={styles.cellImage} source={{uri: item.image}} />
+        </View>
+        <Dash
+          style={styles.dash}
+          dashThickness={0.5}
+          dashColor={Colors.lightGray}
         />
+        <View style={styles.cellActions}>
+          <View style={styles.likeView}>
+            <IcOptions />
+            <Text style={styles.textCount}>273</Text>
+          </View>
+          <View style={styles.groubBtn}>
+            <TouchableOpacity style={styles.cellBtn}>
+              <IcOptions />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cellBtn}>
+              <IcOptions />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     )
   }
 }
 
-export default Feeds
+export default FeedCell
 
 const LIST_PADDING_HORIZONTAL = 25
 const AVATAR_VIEW_WIDTH = 38
@@ -69,9 +75,6 @@ const AVATAR_WIDTH_SUB = 18
 const AVATAR_SUB_MARGIN_LEFT = 13
 
 const styles = StyleSheet.create({
-  contentContainerStyle: {
-    paddingVertical: 15
-  },
   dash: {
     width: '100%',
     marginTop: 10
@@ -102,6 +105,7 @@ const styles = StyleSheet.create({
   },
   itemSeparatorComponent: {
     height: 10,
+    flex: 1,
     backgroundColor: Colors.lightGray
   },
   nameDescription: {},
@@ -187,7 +191,6 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   cell: {
-    marginBottom: 50,
     backgroundColor: 'white',
     paddingVertical: 15,
     marginHorizontal: 10
@@ -203,7 +206,8 @@ const styles = StyleSheet.create({
     fontSize: 40
   },
   flatlist: {
-    backgroundColor: Colors.lightGray
+    backgroundColor: Colors.lightGray,
+    paddingVertical: 10
   },
   container: {
     flex: 1,

@@ -7,12 +7,18 @@
  */
 
 import React from 'react'
+import {StatusBar} from 'react-native'
+import Colors from 'utils/Colors'
 
 import RootNavigator from 'navigations'
 
 const App = () => {
   return (
     <>
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={Colors.statusBar}
+      />
       <RootNavigator />
     </>
   )

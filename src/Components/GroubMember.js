@@ -1,66 +1,55 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react'
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Platform,
-  Image,
-  SafeAreaView,
-  Dimensions,
-  TouchableOpacity,
-  StatusBar
-} from 'react-native'
-import Dash from 'components/Dash'
+import {View, StyleSheet, Image, Dimensions} from 'react-native'
 import {IcOptions} from 'utils/VectorIcons'
 import Colors from 'utils/Colors'
-import FeedCell from './FeedCell'
-import Header from 'components/Header'
-import {HEADER_HEIGHT} from 'utils/Constants'
-import {STATUS_BAR_HEIGHT} from 'utils/StatusBarHeight'
 
-const feedAPI = 'https://5dda31555730550014fe75fa.mockapi.io/Post'
-
-const itemSeparatorComponent = () => {
-  return <View style={styles.itemSeparatorComponent} />
-}
 class Feeds extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      isLoading: true,
-      data: []
-    }
-  }
-
-  async componentDidMount() {
-    const re = await fetch(feedAPI, {method: 'GET'})
-    const data = await re.json()
-    this.setState({isLoading: false, data})
-  }
-
   render() {
-    const {data} = this.state
+    const item = {}
 
     return (
-      <View style={styles.container}>
-        <Header />
-        <FlatList
-          data={data}
-          style={styles.flatlist}
-          keyExtractor={(item) => `${item.id}`}
-          renderItem={({item}) => <FeedCell item={item} />}
-          ItemSeparatorComponent={itemSeparatorComponent}
-          contentContainerStyle={styles.contentContainerStyle}
-        />
-      </View>
+      <>
+        <View style={styles.groupMember}>
+          <View style={[styles.avatarViewSub, {zIndex: 1}]}>
+            <Image style={styles.avatarSub} source={{uri: item.avatarPoster}} />
+          </View>
+          <View
+            style={[
+              styles.avatarViewSub,
+              {zIndex: 2, marginLeft: AVATAR_SUB_MARGIN_LEFT}
+            ]}>
+            <Image style={styles.avatarSub} source={{uri: item.avatarPoster}} />
+          </View>
+          <View
+            style={[
+              styles.avatarViewSub,
+              {zIndex: 3, marginLeft: 2 * AVATAR_SUB_MARGIN_LEFT}
+            ]}>
+            <Image style={styles.avatarSub} source={{uri: item.avatarPoster}} />
+          </View>
+          <View
+            style={[
+              styles.avatarViewSub,
+              {zIndex: 4, marginLeft: 3 * AVATAR_SUB_MARGIN_LEFT}
+            ]}>
+            <Image style={styles.avatarSub} source={{uri: item.avatarPoster}} />
+          </View>
+        </View>
+        <View style={styles.cOptionsView}>
+          <IcOptions
+            size={20}
+            color={'black'}
+            onPress={() => console.log('onPress cell option')}
+          />
+        </View>
+      </>
     )
   }
 }
 
 export default Feeds
 
-const LIST_PADDING_HORIZONTAL = 25
 const AVATAR_VIEW_WIDTH = 38
 const AVATAR_WIDTH = 34
 
@@ -69,39 +58,12 @@ const AVATAR_WIDTH_SUB = 18
 const AVATAR_SUB_MARGIN_LEFT = 13
 
 const styles = StyleSheet.create({
-  contentContainerStyle: {
-    paddingVertical: 15
-  },
-  dash: {
-    width: '100%',
-    marginTop: 10
-  },
-  cellSeparator: {
-    borderColor: Colors.lightGray,
-    borderTopWidth: 2,
-    height: 10,
-    borderStyle: 'dotted'
-  },
-  groubBtn: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  likeView: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  cellActions: {
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
   clocaton: {
     color: 'green'
   },
   itemSeparatorComponent: {
     height: 10,
+    flex: 1,
     backgroundColor: Colors.lightGray
   },
   nameDescription: {},
@@ -174,7 +136,7 @@ const styles = StyleSheet.create({
   },
   cellDescription: {
     marginVertical: 10,
-    fontSize: 16,
+    fontSize: 14,
     marginHorizontal: 10
   },
   cellDate: {
@@ -189,7 +151,7 @@ const styles = StyleSheet.create({
   cell: {
     marginBottom: 50,
     backgroundColor: 'white',
-    paddingVertical: 15,
+    paddingVertical: 10,
     marginHorizontal: 10
   },
   cellImage: {
@@ -203,7 +165,8 @@ const styles = StyleSheet.create({
     fontSize: 40
   },
   flatlist: {
-    backgroundColor: Colors.lightGray
+    backgroundColor: Colors.lightGray,
+    paddingVertical: 10
   },
   container: {
     flex: 1,

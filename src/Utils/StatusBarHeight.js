@@ -59,3 +59,5 @@ export function getStatusBarHeight(skipAndroid) {
     default: 0
   })
 }
+
+export const STATUS_BAR_HEIGHT = getStatusBarHeight()
