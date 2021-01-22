@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react'
 import {View, StyleSheet, Image, Dimensions} from 'react-native'
-import {IcOptions} from 'utils/VectorIcons'
+import {FontAwesomeIcon} from 'utils/VectorIcons'
 import Colors from 'utils/Colors'
 
 class Feeds extends React.PureComponent {
@@ -37,7 +37,8 @@ class Feeds extends React.PureComponent {
           </View>
         </View>
         <View style={styles.cOptionsView}>
-          <IcOptions
+          <FontAwesomeIcon
+            name="ellipsis-h"
             size={20}
             color={'black'}
             onPress={() => console.log('onPress cell option')}

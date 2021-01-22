@@ -11,7 +11,7 @@ import {
   StatusBar
 } from 'react-native'
 import Dash from 'components/Dash'
-import {FontAwesomeIcon} from 'utils/VectorIcons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Colors from 'utils/Colors'
 import {HEADER_HEIGHT} from 'utils/Constants'
 import {STATUS_BAR_HEIGHT} from 'utils/StatusBarHeight'
@@ -23,17 +23,17 @@ const Header = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.left}>
-          <FontAwesomeIcon name={'user-circle'} color={'white'} size={26} />
+          <FontAwesome name={'user-circle'} color={'white'} size={26} />
         </View>
         <View style={styles.center}>
-          <Text style={{color: 'white'}}>center</Text>
+          <Text style={{color: 'white'}}>Companians</Text>
         </View>
         <View style={styles.right}>
           <TouchableOpacity activeOpacity={1}>
-            <FontAwesomeIcon name={'search'} color={'white'} size={18} />
+            <FontAwesome name={'search'} color={'white'} size={18} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.notiView} activeOpacity={1}>
-            <FontAwesomeIcon name={'bell'} color={'white'} size={18} />
+            <FontAwesome name={'bell'} color={'white'} size={18} />
             <View style={styles.bagdeView}>
               <Text style={styles.bagdeCount}>
                 {bagdeCount > 99 ? 'N' : bagdeCount}
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     right: -3
   },
   notiView: {
-    marginLeft: 10,
+    marginLeft: 15,
     paddingRight: 5
   },
   left: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingLeft: 10
+    paddingLeft: 15
   },
   center: {
     flex: 1,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingRight: 10
+    paddingRight: 15
   },
   header: {
     width: '100%',

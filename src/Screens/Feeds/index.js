@@ -1,28 +1,11 @@
 import React from 'react'
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Platform,
-  Image,
-  SafeAreaView,
-  Dimensions,
-  TouchableOpacity,
-  StatusBar
-} from 'react-native'
-import Dash from 'components/Dash'
-import {IcOptions} from 'utils/VectorIcons'
+import {View, StyleSheet, FlatList, Dimensions} from 'react-native'
 import Colors from 'utils/Colors'
 import FeedCell from './FeedCell'
 import Header from 'components/Header'
-import {HEADER_HEIGHT} from 'utils/Constants'
-import {STATUS_BAR_HEIGHT} from 'utils/StatusBarHeight'
 
 const feedAPI = 'https://5dda31555730550014fe75fa.mockapi.io/Post'
 
-const itemSeparatorComponent = () => {
-  return <View style={styles.itemSeparatorComponent} />
-}
 class Feeds extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -34,9 +17,14 @@ class Feeds extends React.PureComponent {
   }
 
   async componentDidMount() {
-    const re = await fetch(feedAPI, {method: 'GET'})
-    const data = await re.json()
-    this.setState({isLoading: false, data})
+    try {
+      const re = await fetch(feedAPI, {method: 'GET'})
+      console.log('re: ', re)
+      const data = await re.json()
+      this.setState({isLoading: false, data})
+    } catch (error) {
+      console.log('error: ', error)
+    }
   }
 
   render() {
@@ -50,7 +38,6 @@ class Feeds extends React.PureComponent {
           style={styles.flatlist}
           keyExtractor={(item) => `${item.id}`}
           renderItem={({item}) => <FeedCell item={item} />}
-          ItemSeparatorComponent={itemSeparatorComponent}
           contentContainerStyle={styles.contentContainerStyle}
         />
       </View>
@@ -60,13 +47,11 @@ class Feeds extends React.PureComponent {
 
 export default Feeds
 
-const LIST_PADDING_HORIZONTAL = 25
 const AVATAR_VIEW_WIDTH = 38
 const AVATAR_WIDTH = 34
 
 const AVATAR_VIEW_WIDTH_SUB = 22
 const AVATAR_WIDTH_SUB = 18
-const AVATAR_SUB_MARGIN_LEFT = 13
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
@@ -102,7 +87,7 @@ const styles = StyleSheet.create({
   },
   itemSeparatorComponent: {
     height: 10,
-    backgroundColor: Colors.lightGray
+    backgroundColor: 'white'
   },
   nameDescription: {},
   posterInfo: {
@@ -203,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 40
   },
   flatlist: {
-    backgroundColor: Colors.lightGray
+    backgroundColor: 'white'
   },
   container: {
     flex: 1,

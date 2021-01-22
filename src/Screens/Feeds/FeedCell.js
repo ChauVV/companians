@@ -8,7 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import Dash from 'components/Dash'
-import {IcOptions} from 'utils/VectorIcons'
+import {FontAwesomeIcon, IoniconsIcon} from 'utils/VectorIcons'
 import Colors from 'utils/Colors'
 
 class FeedCell extends React.PureComponent {
@@ -17,6 +17,7 @@ class FeedCell extends React.PureComponent {
 
     return (
       <View style={styles.cell}>
+        {/* Header */}
         <View style={styles.cellAvatar}>
           <View style={styles.avatarView}>
             <Image style={styles.avatar} source={{uri: item.avatarPoster}} />
@@ -37,6 +38,7 @@ class FeedCell extends React.PureComponent {
             'Thêm ngày cho chuyến đi của bạn để nhận thông tin về chính sách hủy cho đặt phòng này.'
           }
         </Text>
+        {/* Middle */}
         <View style={styles.imageView}>
           <Image style={styles.cellImage} source={{uri: item.image}} />
         </View>
@@ -45,17 +47,18 @@ class FeedCell extends React.PureComponent {
           dashThickness={0.5}
           dashColor={Colors.lightGray}
         />
+        {/* Bottom */}
         <View style={styles.cellActions}>
           <View style={styles.likeView}>
-            <IcOptions />
+            <FontAwesomeIcon name="heart" />
             <Text style={styles.textCount}>273</Text>
           </View>
           <View style={styles.groubBtn}>
             <TouchableOpacity style={styles.cellBtn}>
-              <IcOptions />
+              <IoniconsIcon name="pin" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.cellBtn}>
-              <IcOptions />
+              <FontAwesomeIcon name="ellipsis-h" />
             </TouchableOpacity>
           </View>
         </View>
@@ -66,15 +69,19 @@ class FeedCell extends React.PureComponent {
 
 export default FeedCell
 
-const LIST_PADDING_HORIZONTAL = 25
 const AVATAR_VIEW_WIDTH = 38
 const AVATAR_WIDTH = 34
 
 const AVATAR_VIEW_WIDTH_SUB = 22
 const AVATAR_WIDTH_SUB = 18
-const AVATAR_SUB_MARGIN_LEFT = 13
 
 const styles = StyleSheet.create({
+  cellBtn: {
+    marginLeft: 10
+  },
+  textCount: {
+    marginLeft: 10
+  },
   dash: {
     width: '100%',
     marginTop: 10
@@ -193,7 +200,14 @@ const styles = StyleSheet.create({
   cell: {
     backgroundColor: 'white',
     paddingVertical: 15,
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    marginBottom: 20,
+
+    shadowColor: '#2e2e2e',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 3
   },
   cellImage: {
     width: Dimensions.get('window').width - 40,
