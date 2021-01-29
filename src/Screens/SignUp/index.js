@@ -1,17 +1,72 @@
 import React, {useState} from 'react'
-import {View, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Dimensions
+} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import APIUtils from 'utils/apiUtils'
+import Spinner from 'react-native-spinkit'
+import * as Constants from 'utils/Constants'
+import AsyncStorage from 'react-native-simple-store'
+import Images from 'assets/Images'
+
+const scWidth = Dimensions.get('window').width
 
 const SignUp = (props) => {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
   const [nickName, setNickName] = useState('')
   const [email, setEmail] = useState('')
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [remember, setRemember] = useState(false)
+  const [agree, setAgree] = useState(true)
+  const [loading, setLoading] = useState(false)
+
+  const signup = async () => {
+    try {
+      setLoading(true)
+      const body = {
+        name: 'lastName',
+        surname: 'firstName',
+        userName: nickName,
+        emailAddress: email,
+        password: password
+      }
+      const url = global.BASE_URL + 'api/services/app/Account/Register'
+      const rp = await APIUtils.post(url, {body})
+
+      if (rp.data.success) {
+        const bodyLogin = {
+          usernameOrEmailAddress: nickName,
+          password: password
+        }
+
+        const urlLogin = global.BASE_URL + 'api/TokenAuth/Authenticate'
+        const rpLogin = await APIUtils.post(urlLogin, {body: bodyLogin})
+
+        setLoading(false)
+        if (rpLogin.data.success) {
+          AsyncStorage.save(Constants.USER_LOGIN_KEY, rp.data.result)
+          props.navigation.reset({
+            index: 0,
+            routes: [{name: 'Tabbar'}]
+          })
+        } else {
+          global.message('Error', rpLogin.data.error.message)
+        }
+      } else {
+        setLoading(false)
+        global.message('Error', rp.data.error.message)
+      }
+    } catch (error) {
+      setLoading(true)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -19,41 +74,16 @@ const SignUp = (props) => {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
         <View style={styles.pane}>
-          <View style={styles.inputPane}>
-            <Text style={styles.inputTitle}>First Name</Text>
-            <View style={styles.inputView}>
-              <TextInput
-                style={[styles.input]}
-                value={firstName}
-                onChangeText={setFirstName}
-                placeholder={'First Name'}
-              />
-            </View>
-          </View>
+          <Image source={Images.loginImg3} style={styles.loginImg} />
 
           <View style={styles.inputPane}>
-            <View style={styles.passwordHeader}>
-              <Text style={styles.inputTitle}>Last Name</Text>
-            </View>
-            <View style={styles.inputView}>
-              <TextInput
-                style={[styles.input]}
-                value={lastName}
-                onChangeText={setLastName}
-                placeholder={'Last Name'}
-                secureTextEntry={true}
-              />
-            </View>
-          </View>
-
-          <View style={styles.inputPane}>
-            <Text style={styles.inputTitle}>Nick Name</Text>
+            <Text style={styles.inputTitle}>Account</Text>
             <View style={styles.inputView}>
               <TextInput
                 style={[styles.input]}
                 value={nickName}
                 onChangeText={setNickName}
-                placeholder={'Nick Name'}
+                placeholder={'Account'}
               />
             </View>
           </View>
@@ -68,7 +98,6 @@ const SignUp = (props) => {
                 value={email}
                 onChangeText={setEmail}
                 placeholder={'Email'}
-                secureTextEntry={true}
               />
             </View>
           </View>
@@ -96,6 +125,7 @@ const SignUp = (props) => {
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 placeholder={'Confirm Password'}
+                secureTextEntry={true}
               />
             </View>
           </View>
@@ -103,10 +133,10 @@ const SignUp = (props) => {
           <TouchableOpacity
             activeOpacity={1}
             style={styles.btnRememberMe}
-            onPress={() => setRemember(!remember)}>
+            onPress={() => setAgree(!agree)}>
             <View style={styles.checkBoxView}>
               <View style={styles.checkBox} />
-              {remember && (
+              {agree && (
                 <Icon
                   name="check"
                   size={25}
@@ -116,13 +146,39 @@ const SignUp = (props) => {
               )}
             </View>
             <Text style={styles.rememberMe}>I agree to all</Text>
-            <TouchableOpacity style={styles.btnSignup} onPress={() => {}}>
+            <TouchableOpacity style={[styles.btnSignup]} onPress={() => {}}>
               <Text style={styles.btnSignupText}>Terms</Text>
             </TouchableOpacity>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnSignIn}>
-            <Text style={styles.btnSignInText}>Sign Up</Text>
+          <TouchableOpacity
+            disabled={
+              nickName.length === 0 ||
+              email.length === 0 ||
+              password.length === 0 ||
+              confirmPassword.length === 0 ||
+              !agree
+            }
+            onPress={() => signup()}
+            style={[
+              styles.btnSignIn,
+              (nickName.length === 0 ||
+                email.length === 0 ||
+                password.length === 0 ||
+                confirmPassword.length === 0 ||
+                !agree) &&
+                styles.disableSignUp
+            ]}>
+            {loading ? (
+              <Spinner
+                style={styles.spinner}
+                size={40}
+                type={'ThreeBounce'}
+                color={'white'}
+              />
+            ) : (
+              <Text style={styles.btnSignInText}>Sign Up</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.signup}>
@@ -144,6 +200,20 @@ const SignUp = (props) => {
 export default SignUp
 
 const styles = StyleSheet.create({
+  spinner: {
+    marginBottom: 10
+  },
+  loginImg: {
+    width: (scWidth / 5) * 4,
+    height: scWidth / 2,
+    alignSelf: 'center',
+    borderRadius: 15,
+    marginBottom: 10,
+    marginTop: 10
+  },
+  disableSignUp: {
+    opacity: 0.5
+  },
   inputPane: {
     marginTop: 10
   },
@@ -160,7 +230,7 @@ const styles = StyleSheet.create({
   signup: {
     flexDirection: 'row',
     alignSelf: 'center',
-    marginTop: 15
+    marginTop: 10
   },
   btnSignInText: {
     color: 'white',
@@ -172,7 +242,8 @@ const styles = StyleSheet.create({
     width: '30%',
     backgroundColor: 'green',
     borderRadius: 5,
-    marginVertical: 50,
+    marginTop: 40,
+    marginBottom: 40,
     justifyContent: 'center',
     alignItems: 'center'
   },

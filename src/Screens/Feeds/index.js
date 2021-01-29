@@ -19,7 +19,6 @@ class Feeds extends React.PureComponent {
   async componentDidMount() {
     try {
       const re = await fetch(feedAPI, {method: 'GET'})
-      console.log('re: ', re)
       const data = await re.json()
       this.setState({isLoading: false, data})
     } catch (error) {
@@ -32,7 +31,7 @@ class Feeds extends React.PureComponent {
 
     return (
       <View style={styles.container}>
-        <Header />
+        <Header isLeft isRight isCenter />
         <FlatList
           data={data}
           style={styles.flatlist}

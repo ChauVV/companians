@@ -21,6 +21,7 @@ import Profile from 'screens/Profile'
 
 import Colors from 'utils/Colors'
 import AddAnnouncements from 'screens/AddAnnouncements'
+import NavigationServices from 'utils/NavigationServices'
 
 const MyTransition = {
   gestureDirection: 'horizontal',
@@ -108,7 +109,7 @@ const MyTabBar = ({state, descriptors, navigation}) => {
 
     return (
       <TouchableOpacity
-        activeOpacity={0}
+        activeOpacity={1}
         key={route0.key.toString()}
         accessibilityRole="button"
         accessibilityState={isFocused ? {selected: true} : {}}
@@ -155,7 +156,7 @@ const MyTabBar = ({state, descriptors, navigation}) => {
 
     return (
       <TouchableOpacity
-        activeOpacity={0}
+        activeOpacity={1}
         key={route2.key.toString()}
         accessibilityRole="button"
         accessibilityState={isFocused ? {selected: true} : {}}
@@ -184,7 +185,7 @@ const MyTabBar = ({state, descriptors, navigation}) => {
         accessibilityRole="button"
         onPress={() => navigation.navigate('AddAnnouncements')}
         style={[styles.tab]}>
-        <Icon name={'plus'} size={30} color={DISABLE_TAB_COLOR} />
+        <Icon name={'plus-square'} size={30} color={ENABLE_TAB_COLOR} />
       </TouchableOpacity>
       {tab2()}
     </View>
@@ -240,7 +241,7 @@ const AuthorzationStack = () => {
 
 const RootNavigation = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={NavigationServices.navigationRef}>
       <Stack.Navigator
         initialRouteName={'AuthorzationStack'}
         screenOptions={{

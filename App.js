@@ -9,6 +9,8 @@
 import React from 'react'
 import {StatusBar} from 'react-native'
 import Colors from 'utils/Colors'
+import './setting'
+import 'utils/Global'
 
 import RootNavigator from 'navigations'
 

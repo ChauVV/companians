@@ -12,26 +12,65 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {getStatusBarHeight} from 'utils/StatusBarHeight'
 import Images from 'assets/Images'
+import APIUtils from 'utils/apiUtils'
+import Spinner from 'react-native-spinkit'
+import * as Constants from 'utils/Constants'
+import AsyncStorage from 'react-native-simple-store'
+
+const scHeight = Dimensions.get('window').height
+const scWidth = Dimensions.get('window').width
 
 const SignIn = (props) => {
-  const [usename, setUsename] = useState('')
-  const [passwords, setPasswords] = useState('')
+  const [username, setUsename] = useState('')
+  const [password, setPasswords] = useState('')
   const [remember, setRemember] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const signIn = async () => {
+    try {
+      if (username.length === 0 || password.length === 0) {
+        return
+      }
+
+      setLoading(true)
+      const body = {
+        usernameOrEmailAddress: username,
+        password: password
+      }
+
+      const url = global.BASE_URL + 'api/TokenAuth/Authenticate'
+      const rp = await APIUtils.post(url, {body})
+
+      setLoading(false)
+      if (rp.data.success) {
+        AsyncStorage.save(Constants.USER_LOGIN_KEY, rp.data.result)
+        props.navigation.reset({
+          index: 0,
+          routes: [{name: 'Tabbar'}]
+        })
+      } else {
+        global.message('Error', rp.data.error.message)
+      }
+    } catch (error) {
+      setLoading(false)
+    }
+  }
 
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
-        <View style={styles.pane}>
+        <View style={styles.pane} pointerEvents={loading ? 'none' : 'box-none'}>
           <Text style={styles.title}>Member Login</Text>
           <Text style={styles.subTitle}>Welcome to Companians</Text>
 
-          <View style={styles.socialIcons}>
+          {/* <View style={styles.socialIcons}>
             <Image source={Images.icFacebook} style={styles.socialIcon} />
             <Image source={Images.icGoogle64} style={styles.socialIcon} />
             <Image source={Images.icTwitter64} style={styles.socialIcon} />
-          </View>
+          </View> */}
+          <Image source={Images.loginImg} style={styles.loginImg} />
 
           <View style={styles.inputPane}>
             <Text style={styles.inputTitle}>ACCOUNT</Text>
@@ -39,7 +78,7 @@ const SignIn = (props) => {
               <Icon name={'user'} color={'black'} size={20} />
               <TextInput
                 style={[styles.input]}
-                value={usename}
+                value={username}
                 onChangeText={setUsename}
                 placeholder={'Your account'}
               />
@@ -59,10 +98,11 @@ const SignIn = (props) => {
               <Icon name={'key'} color={'black'} size={20} />
               <TextInput
                 style={[styles.input]}
-                value={passwords}
+                value={password}
                 onChangeText={setPasswords}
                 placeholder={'Your password'}
                 secureTextEntry={true}
+                onSubmitEditing={() => signIn()}
               />
             </View>
           </View>
@@ -86,14 +126,26 @@ const SignIn = (props) => {
           </TouchableOpacity>
 
           <TouchableOpacity
+            disabled={username.length === 0 || password.length === 0}
             style={styles.btnSignIn}
-            onPress={() =>
-              props.navigation.reset({
-                index: 0,
-                routes: [{name: 'Tabbar'}]
-              })
-            }>
-            <Text style={styles.btnSignInText}>Sign In</Text>
+            onPress={() => signIn()}>
+            {loading ? (
+              <Spinner
+                style={styles.spinner}
+                size={40}
+                type={'ThreeBounce'}
+                color={'white'}
+              />
+            ) : (
+              <Text
+                style={[
+                  styles.btnSignInText,
+                  (username.length === 0 || password.length === 0) &&
+                    styles.disabledBtn
+                ]}>
+                Sign In
+              </Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.signup}>
@@ -113,6 +165,19 @@ const SignIn = (props) => {
 export default SignIn
 
 const styles = StyleSheet.create({
+  spinner: {
+    marginBottom: 10
+  },
+  loginImg: {
+    width: (scWidth / 5) * 4,
+    height: scWidth / 2,
+    alignSelf: 'center',
+    borderRadius: 15,
+    marginBottom: 40
+  },
+  disabledBtn: {
+    opacity: 0.5
+  },
   btnSignupText: {
     color: 'green',
     fontSize: 15,
@@ -234,7 +299,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: Dimensions.get('window').height - getStatusBarHeight()
+    height: scHeight - getStatusBarHeight(),
+    marginTop: 40
   },
   container: {
     flex: 1

@@ -1,21 +1,23 @@
 import React from 'react'
-import {Dimensions, StyleSheet, View, ScrollView, Animated} from 'react-native'
+import {Dimensions, StyleSheet, View, FlatList, Animated} from 'react-native'
+
+import {STATUS_BAR_HEIGHT} from 'utils/StatusBarHeight'
+import PropTypes from 'prop-types'
 
 const screen = Dimensions.get('window')
-const ScrollViewPropTypes = ScrollView.propTypes
+const FlatListPropTypes = FlatList.propTypes
 
 class ParallaxView extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.state = {
-      scrollY: new Animated.Value(0)
-    }
+    this.state = {}
+    this.scrollY = new Animated.Value(0)
   }
 
   renderBackground = () => {
     const {windowHeight, backgroundSource} = this.props
-    const {scrollY} = this.state
+    const {scrollY} = this
     if (!windowHeight || !backgroundSource) {
       return null
     }
@@ -47,24 +49,25 @@ class ParallaxView extends React.PureComponent {
   }
 
   renderHeader = () => {
-    var {windowHeight, backgroundSource} = this.props
-    var {scrollY} = this.state
+    var {windowHeight, backgroundSource, avatarHeight} = this.props
+    var {scrollY} = this
     if (!windowHeight || !backgroundSource) {
       return null
     }
+    console.log('scrolly: ', scrollY)
     return (
       <Animated.View
         style={[
           styles.header,
           {
-            height: windowHeight,
+            height: windowHeight - STATUS_BAR_HEIGHT - avatarHeight,
             opacity: scrollY.interpolate({
               inputRange: [-windowHeight, 0, windowHeight / 1.2],
               outputRange: [1, 1, 0]
             })
           }
         ]}>
-        {this.props.header}
+        <View />
       </Animated.View>
     )
   }
@@ -74,21 +77,23 @@ class ParallaxView extends React.PureComponent {
     return (
       <View style={[styles.container, style]}>
         {this.renderBackground()}
-        <ScrollView
+        {this.props.header}
+        <FlatList
           ref={(component) => {
             this._scrollView = component
           }}
           {...props}
           style={styles.scrollView}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: this.state.scrollY}}}
-          ])}
-          scrollEventThrottle={16}>
-          {this.renderHeader()}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: this.scrollY}}}],
+            {useNativeDriver: false}
+          )}
+          scrollEventThrottle={16}
+          ListHeaderComponent={this.renderHeader()}>
           <View style={[styles.content, props.scrollableViewStyle]}>
             {this.props.children}
           </View>
-        </ScrollView>
+        </FlatList>
       </View>
     )
   }
@@ -96,23 +101,26 @@ class ParallaxView extends React.PureComponent {
 
 ParallaxView.defaultProps = {
   windowHeight: 300,
+  avatarHeight: 0,
   contentInset: {
     top: screen.scale
   }
 }
 
 ParallaxView.propTypes = {
-  ...ScrollViewPropTypes,
-  windowHeight: React.PropTypes.number,
-  backgroundSource: React.PropTypes.oneOfType([
-    React.PropTypes.shape({
-      uri: React.PropTypes.string
+  ...FlatListPropTypes,
+  windowHeight: PropTypes.number,
+  avatarHeight: PropTypes.number,
+  backgroundSource: PropTypes.oneOfType([
+    PropTypes.shape({
+      uri: PropTypes.string
     }),
-    React.PropTypes.number
+    PropTypes.number
   ]),
-  header: React.PropTypes.node,
-  blur: React.PropTypes.string,
-  contentInset: React.PropTypes.object
+  header: PropTypes.node,
+  blur: PropTypes.string,
+  contentInset: PropTypes.object,
+  data: PropTypes.array
 }
 
 const styles = StyleSheet.create({
@@ -127,8 +135,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   background: {
+    top: STATUS_BAR_HEIGHT,
     position: 'absolute',
-    backgroundColor: '#2e2f31',
+    backgroundColor: 'lightblue',
     width: screen.width,
     resizeMode: 'cover'
   },
@@ -141,10 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   content: {
-    shadowColor: '#222',
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     flex: 1,
     flexDirection: 'column'
   }
