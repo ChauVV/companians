@@ -8,6 +8,7 @@ import {
   TransitionSpecs,
   HeaderStyleInterpolators
 } from '@react-navigation/stack'
+import {connect} from 'react-redux'
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -73,7 +74,7 @@ const Stack = createStackNavigator()
 const ENABLE_TAB_COLOR = 'white'
 const DISABLE_TAB_COLOR = 'gray'
 
-const MyTabBar = ({state, descriptors, navigation}) => {
+const MyTabBar = ({state, descriptors, navigation, user}) => {
   const focusedOptions = descriptors[state.routes[state.index].key].options
 
   if (focusedOptions.tabBarVisible === false) {
@@ -239,11 +240,13 @@ const AuthorzationStack = () => {
   )
 }
 
-const RootNavigation = () => {
+const RootNavigation = (props) => {
+  const accessToken = props.user.accessToken
+
   return (
     <NavigationContainer ref={NavigationServices.navigationRef}>
       <Stack.Navigator
-        initialRouteName={'AuthorzationStack'}
+        initialRouteName={accessToken ? 'Tabbar' : 'AuthorzationStack'}
         screenOptions={{
           headerShown: false
         }}>
@@ -281,7 +284,14 @@ const RootNavigation = () => {
   )
 }
 
-export default RootNavigation
+// -- REDUX STORE
+function mapPropsToStates(store) {
+  return {
+    user: store.user
+  }
+}
+
+export default connect(mapPropsToStates, null)(RootNavigation)
 
 const styles = StyleSheet.create({
   tabBar: {

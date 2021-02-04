@@ -1,4 +1,4 @@
-import {Alert, StatusBar} from 'react-native'
+import {Alert} from 'react-native'
 
 global.message = (title = '', message = '') => {
   Alert.alert(

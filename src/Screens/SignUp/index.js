@@ -15,6 +15,8 @@ import Spinner from 'react-native-spinkit'
 import * as Constants from 'utils/Constants'
 import AsyncStorage from 'react-native-simple-store'
 import Images from 'assets/Images'
+import {connect} from 'react-redux'
+import constants from 'reduxs/lib/constants'
 
 const scWidth = Dimensions.get('window').width
 
@@ -51,7 +53,8 @@ const SignUp = (props) => {
 
         setLoading(false)
         if (rpLogin.data.success) {
-          AsyncStorage.save(Constants.USER_LOGIN_KEY, rp.data.result)
+          AsyncStorage.save(Constants.USER_LOGIN_KEY, rpLogin.data.result)
+          props.setUser(rp.data.result)
           props.navigation.reset({
             index: 0,
             routes: [{name: 'Tabbar'}]
@@ -73,7 +76,7 @@ const SignUp = (props) => {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
-        <View style={styles.pane}>
+        <View style={styles.pane} pointerEvents={loading ? 'none' : 'box-none'}>
           <Image source={Images.loginImg3} style={styles.loginImg} />
 
           <View style={styles.inputPane}>
@@ -197,7 +200,17 @@ const SignUp = (props) => {
   )
 }
 
-export default SignUp
+const mapPropsToStates = (store) => {
+  return {}
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => dispatch({type: constants.SET_USER, payload: user})
+  }
+}
+
+export default connect(mapPropsToStates, mapDispatchToProps)(SignUp)
 
 const styles = StyleSheet.create({
   spinner: {

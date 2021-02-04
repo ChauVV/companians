@@ -16,6 +16,8 @@ import APIUtils from 'utils/apiUtils'
 import Spinner from 'react-native-spinkit'
 import * as Constants from 'utils/Constants'
 import AsyncStorage from 'react-native-simple-store'
+import {connect} from 'react-redux'
+import constants from 'reduxs/lib/constants'
 
 const scHeight = Dimensions.get('window').height
 const scWidth = Dimensions.get('window').width
@@ -44,6 +46,7 @@ const SignIn = (props) => {
       setLoading(false)
       if (rp.data.success) {
         AsyncStorage.save(Constants.USER_LOGIN_KEY, rp.data.result)
+        props.setUser(rp.data.result)
         props.navigation.reset({
           index: 0,
           routes: [{name: 'Tabbar'}]
@@ -162,7 +165,17 @@ const SignIn = (props) => {
   )
 }
 
-export default SignIn
+const mapPropsToStates = (store) => {
+  return {}
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => dispatch({type: constants.SET_USER, payload: user})
+  }
+}
+
+export default connect(mapPropsToStates, mapDispatchToProps)(SignIn)
 
 const styles = StyleSheet.create({
   spinner: {

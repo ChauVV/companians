@@ -3,6 +3,7 @@ import {View, StyleSheet, FlatList, Dimensions} from 'react-native'
 import Colors from 'utils/Colors'
 import FeedCell from './FeedCell'
 import Header from 'components/Header'
+import {connect} from 'react-redux'
 
 const feedAPI = 'https://5dda31555730550014fe75fa.mockapi.io/Post'
 
@@ -18,9 +19,24 @@ class Feeds extends React.PureComponent {
 
   async componentDidMount() {
     try {
-      const re = await fetch(feedAPI, {method: 'GET'})
+      const numDayBefore = 7
+      const skipDay = 1
+
+      const url =
+        global.BASE_URL +
+        `api/services/app/DiaryMediaManager/GetDiaryMedia?numDayBefore=${numDayBefore}&skipDay=${skipDay}`
+
+      const re = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: this.props.user.accessToken
+        }
+      })
       const data = await re.json()
-      this.setState({isLoading: false, data})
+      console.log('data: ', data)
+
+      // this.setState({isLoading: false, data})
     } catch (error) {
       console.log('error: ', error)
     }
@@ -44,7 +60,13 @@ class Feeds extends React.PureComponent {
   }
 }
 
-export default Feeds
+function mapPropsToStates(store) {
+  return {
+    user: store.user
+  }
+}
+
+export default connect(mapPropsToStates, null)(Feeds)
 
 const AVATAR_VIEW_WIDTH = 38
 const AVATAR_WIDTH = 34

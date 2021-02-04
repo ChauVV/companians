@@ -1,10 +1,7 @@
-'use strict'
-
 import {applyMiddleware, createStore} from 'redux'
-import thunkMiddleware from 'redux-thunk'
 import logger from 'redux-logger'
 import createSagaMiddleWare from 'redux-saga'
-import {middlewareNav} from './AppNavigator'
+import {persistStore} from 'redux-persist'
 // Root action reducer
 import rootReducer from '../reducers'
 // Root action saga
@@ -14,8 +11,6 @@ import {LogBox} from 'react-native'
 
 const sagaMiddleWare = createSagaMiddleWare()
 let middleWare = [sagaMiddleWare]
-middleWare.push(thunkMiddleware)
-middleWare.push(middlewareNav)
 
 if (process.env.NODE_ENV === 'development') {
   middleWare.push(logger)
@@ -23,7 +18,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const store = createStore(rootReducer, applyMiddleware(...middleWare))
+const persistor = persistStore(store)
+
+export default {store, persistor}
+
+export {store, persistor}
 
 sagaMiddleWare.run(rootSaga)
-
-export default store
